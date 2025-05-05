@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 import tn.esprit.tic.timeforge.Entity.Ennum.RoleName;
 import tn.esprit.tic.timeforge.Service.security.JwtAuthenticationFilter;
 import tn.esprit.tic.timeforge.Service.security.JwtUtil;
@@ -36,7 +37,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/visiteur/**").permitAll()
+                        .requestMatchers("/auth/**","/api/notifications","/projects/suggest-solution/**", "/projects/apply-solution/**", "/visiteur/**","/projects/**","/tasks/**","/comments/**","/users/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
@@ -68,5 +70,10 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder())
                 .and()
                 .build();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

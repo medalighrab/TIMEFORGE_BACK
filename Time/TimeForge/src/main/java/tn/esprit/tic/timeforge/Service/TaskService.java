@@ -11,7 +11,8 @@ import tn.esprit.tic.timeforge.Entity.Project;
 import tn.esprit.tic.timeforge.Entity.Role;
 import tn.esprit.tic.timeforge.Entity.Task;
 import tn.esprit.tic.timeforge.Entity.User;
-import tn.esprit.tic.timeforge.Repository.IprojetRepo;
+
+import tn.esprit.tic.timeforge.Repository.ProjectRepository;
 import tn.esprit.tic.timeforge.Repository.RoleRepository;
 import tn.esprit.tic.timeforge.Repository.TaskRepository;
 import tn.esprit.tic.timeforge.Repository.UserRepository;
@@ -28,7 +29,7 @@ public class TaskService implements IntTaskService {
    @Autowired
     TaskRepository taskRepository;
     @Autowired
-    IprojetRepo iprojetRepo;
+    ProjectRepository iprojetRepo;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -62,6 +63,73 @@ public class TaskService implements IntTaskService {
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Task with ID " + id + " not found"));
     }
+
+
+
+    // New methods implementation
+
+    @Override
+    public Task AffecteTasksAUserEtProjet(Long idTask, Long idUser, Long idProjet) {
+        Task task = taskRepository.findById(idTask).orElseThrow(() -> new EntityNotFoundException("Task not found"));
+        User user = userRepository.findById(idUser).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Project project = iprojetRepo.findById(idProjet).orElseThrow(() -> new EntityNotFoundException("Project not found"));
+
+        task.setEmployee11(user);
+        task.setProject(project);
+        return taskRepository.save(task);
+    }
+    @Override
+    public Task ajouterEtAffecterTache(Task task, Long idUser, Long idProjet) {
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Project project = iprojetRepo.findById(idProjet)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found"));
+
+        task.setEmployee11(user);
+        task.setProject(project);
+
+        return taskRepository.save(task);
+    }
+
+
+    @Override
+    public Task ReassignTasksAUserEtProjet(Long idTask, Long idUser, Long idProjet) {
+        // This is similar to AffecteTasksAUserEtProjet but might have different business logic
+        // Currently implemented the same way, but can be modified as needed
+        return AffecteTasksAUserEtProjet(idTask, idUser, idProjet);
+    }
+
+    @Override
+    public List<Task> listTaskBLlog() {
+        // Assuming BLlog means backlog tasks
+        return taskRepository.findByStatus(StatusTask.BLOCKED);
+    }
+
+    @Override
+    public List<Task> listTasktodo() {
+        return taskRepository.findByStatus(StatusTask.TODO);
+    }
+
+    @Override
+    public List<Task> listTaskinprogress() {
+        return taskRepository.findByStatus(StatusTask.IN_PROGRESS);
+    }
+
+    @Override
+    public List<Task> listTaskdone() {
+        return taskRepository.findByStatus(StatusTask.DONE);
+    }
+
+//    @Override
+//    public long getTaskCountByProject(Long projectId) {
+//        return taskRepository.countByProjectId(projectId);
+//    }
+
+//    @Override
+//    public long getTaskCountByUser(Long userId) {
+//        return taskRepository.countByEmployee11Id(userId);
+//    }
+
     @Override
     @Transactional
     public String updateTaskStatus(Long id, StatusTask updatedStatus) {
@@ -138,11 +206,19 @@ public class TaskService implements IntTaskService {
     public List<Project> getall() {
         return iprojetRepo.findAll();
     }
+//    @Override
+//    public List<Project> getallprojetbyidLead(Long id) {
+//        System.out.println(id);
+//        User user = userRepository.findById(id).orElse(null);
+//        return iprojetRepo.findAllByTeamlead(user);
+//    }
+
     @Override
-    public List<Project> getallprojetbyidLead(Long id) {
-        System.out.println(id);
-        User user = userRepository.findById(id).orElse(null);
-        return iprojetRepo.findAllByTeamlead(user);
+    public List<Task> getTasksByProjectId(Long projectId) {
+        Project project = iprojetRepo.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Project with ID " + projectId + " not found"));
+        return taskRepository.findByProject(project);
     }
+
 
 }

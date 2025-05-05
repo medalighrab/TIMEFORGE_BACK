@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -21,9 +22,13 @@ public class User  {
     private Long idUser;
     private String username ;
     private String name;
+    @JsonIgnore
+
     private String password;
     private String resetpasswordtoken;
     private int cin;
+    private int nbrtasks;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy="teamlead")
     @JsonIgnore
     private Set<Project> Projects;
@@ -49,5 +54,10 @@ public class User  {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="teamlead")
     @JsonIgnore
     private Set<Goals> Goals;
+    @OneToMany(mappedBy = "userComment")
+    private List<ProjectComment> comments;
 
+
+    public void setUpcomingDeadline(boolean b) {
+    }
 }

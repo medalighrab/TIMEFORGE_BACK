@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.w3c.dom.Text;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -21,8 +22,13 @@ public class ProjectComment   {
     Long projectId;
     Long userId;
     String comment;
-    Date createdAt;
+    LocalDateTime createdAt;
     @ManyToOne
     @JsonIgnore
     Project project;
+
+    @JsonIgnore
+    @ManyToOne
+    private User userComment;
+
 }

@@ -129,8 +129,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
+import tn.esprit.tic.timeforge.Entity.User;
 
 import javax.crypto.SecretKey;
+import javax.management.relation.Relation;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -207,11 +209,17 @@ public class JwtUtil {
 
     // Generate Refresh Token (if needed)
     public String generateRefreshToken(String username) {
+        User user = new User();
+        System.out.println(user.getRoles());
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(user.getUsername()) // ou user.getUsername()
+                .claim("roles", user.getRoles()) // ✅ AJOUT ICI
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME * 2)) // 2x expiration time
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
+
     }
+
+
 }
