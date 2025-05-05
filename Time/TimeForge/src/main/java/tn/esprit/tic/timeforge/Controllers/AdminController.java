@@ -44,5 +44,6 @@ public class AdminController {
         List<User> users = adminService.listUsers();
         return ResponseEntity.ok(users);
     }
+
 }
 

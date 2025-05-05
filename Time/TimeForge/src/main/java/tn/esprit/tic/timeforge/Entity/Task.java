@@ -1,5 +1,6 @@
 package tn.esprit.tic.timeforge.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -25,7 +26,7 @@ public class Task  {
     private String description;
     @Enumerated(EnumType.STRING)
     private StatusTask status=StatusTask.TODO;
-    private int priority;
+
     private LocalDate startDate;
     private LocalDate deadline;
     private long durationInDays;
@@ -42,6 +43,8 @@ public class Task  {
     @ManyToOne
     @JoinColumn( name = "projectId",nullable = true)
     @JsonIgnoreProperties("tasks")
+    @JsonBackReference
+
     Project project;
     @ManyToOne
     @JsonIgnore

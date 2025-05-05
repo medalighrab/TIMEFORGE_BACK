@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import tn.esprit.tic.timeforge.Entity.Ennum.StatusTask;
+import tn.esprit.tic.timeforge.Entity.Project;
 import tn.esprit.tic.timeforge.Entity.Task;
 import tn.esprit.tic.timeforge.Entity.User;
 
@@ -14,4 +16,10 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findAllByEmployee11(User user);
+    public List<Task> findByStatus(StatusTask status);
+//    long countByProjectId(Long projectId);
+//    long countByEmployee11Id(Long userId);
+    List<Task> findByProject(Project project);
+
+
 }
